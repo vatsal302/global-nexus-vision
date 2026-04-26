@@ -1,7 +1,7 @@
 # GitHub Pages Deployment
 
-This repo ships with `.github/workflows/deploy.yml` that builds the site and
-publishes the static client bundle to GitHub Pages on every push to `main`.
+This repo ships with `.github/workflows/static.yml` that builds a standalone
+SPA bundle and publishes it to GitHub Pages on every push to `main`.
 
 ## One-time setup
 
@@ -13,18 +13,25 @@ publishes the static client bundle to GitHub Pages on every push to `main`.
 
 ## How it works
 
-- `npm run build` produces `dist/client/` (assets only — no HTML, since the
-  upstream framework relies on an SSR worker that GitHub Pages can't run).
-- `scripts/build-gh-pages-shell.mjs` then synthesizes a static `index.html`
-  + `404.html` (SPA fallback) wired to the built JS/CSS.
-- The workflow uploads `dist/client/` and deploys it to Pages.
+This project's primary build target (`npm run build`) produces a TanStack
+Start SSR bundle that needs a Worker runtime — GitHub Pages can't run that.
 
-## Local preview of the static shell
+For Pages we use a separate **standalone SPA build**:
+
+- `npm run build:spa` uses `vite.spa.config.ts` to bundle `spa.html` +
+  `src/spa-entry.tsx`, which calls `createRoot(...)` against `<div id="root">`
+  instead of hydrating a server-rendered tree.
+- `node scripts/build-gh-pages-shell.mjs` then renames `spa.html` →
+  `index.html`, copies it to `404.html` (SPA fallback for deep links), and
+  drops a `.nojekyll` marker.
+- The workflow uploads `dist/spa/` and deploys it to Pages.
+
+## Local preview of the static site
 
 ```bash
-npm run build
+npm run build:spa
 node scripts/build-gh-pages-shell.mjs
-npx serve dist/client     # or any static server
+npx serve dist/spa     # or any static server
 ```
 
 ## Notes
