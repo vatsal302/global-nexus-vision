@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import circuitImg from "@/assets/circuit-level.jpg";
 import { SectionLabel } from "./SectionLabel";
-import { DataPanel } from "./DataPanel";
+
 import { HotspotDialog, type HotspotData } from "./HotspotDialog";
 
 const GATES: (HotspotData & { x: number; y: number })[] = [
