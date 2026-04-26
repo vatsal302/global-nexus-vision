@@ -1,26 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { NavChrome } from "@/components/nexus/NavChrome";
+import { CustomCursor } from "@/components/nexus/CustomCursor";
+import { SpaceSection } from "@/components/nexus/SpaceSection";
+import { NetworkSection } from "@/components/nexus/NetworkSection";
+import { CitySection } from "@/components/nexus/CitySection";
+import { UndergroundSection } from "@/components/nexus/UndergroundSection";
+import { CircuitSection } from "@/components/nexus/CircuitSection";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Global Tech Infrastructure Nexus — Satellite to Silicon" },
+      {
+        name: "description",
+        content:
+          "A cinematic, scroll-driven view of global infrastructure — from orbiting satellites and sub-sea cables to underground turbines and silicon pulses.",
+      },
+      { property: "og:title", content: "Global Tech Infrastructure Nexus" },
+      {
+        property: "og:description",
+        content:
+          "Cinematic scroll-driven journey from orbit to circuit — visualize the live, interdependent global infrastructure system.",
+      },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return (
+    <main className="relative bg-background text-foreground">
+      <CustomCursor />
+      <NavChrome />
+      <SpaceSection />
+      <NetworkSection />
+      <CitySection />
+      <UndergroundSection />
+      <CircuitSection />
+    </main>
+  );
 }
