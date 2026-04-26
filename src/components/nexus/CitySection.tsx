@@ -18,10 +18,11 @@ export function CitySection() {
     <section
       ref={ref}
       id="city"
-      className="relative h-[180vh] w-full bg-background"
+      aria-label="City — urban energy and mobility grid"
+      className="snap-section relative h-[180vh] w-full bg-background"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ scale: bgScale, y: bgY }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden perspective-stage">
+        <motion.div className="absolute inset-0 depth-back preserve-3d" style={{ scale: bgScale, y: bgY }}>
           <img
             src={cityImg}
             alt="Futuristic city grid"

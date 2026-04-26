@@ -1,10 +1,67 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import circuitImg from "@/assets/circuit-level.jpg";
 import { SectionLabel } from "./SectionLabel";
-import { DataPanel } from "./DataPanel";
+
+import { HotspotDialog, type HotspotData } from "./HotspotDialog";
+
+const GATES: (HotspotData & { x: number; y: number })[] = [
+  {
+    id: "gate-a4",
+    title: "Logic Gate · A4",
+    status: "PROCESSING",
+    description: "Top-of-die NAND cluster handling control-plane decisions for the inbound orbit pulse.",
+    rows: [
+      { k: "Clock", v: "5.8 GHz" },
+      { k: "TDP", v: "127 W" },
+      { k: "Cache Hit", v: "99.4%" },
+      { k: "Pulse Origin", v: "ORBIT-11" },
+    ],
+    x: 22, y: 15,
+  },
+  {
+    id: "gate-b7",
+    title: "Logic Gate · B7",
+    status: "FETCH",
+    description: "Mid-die fetch unit pre-loading routing tables for the next sub-sea hop.",
+    rows: [
+      { k: "Clock", v: "5.8 GHz" },
+      { k: "L2 Pressure", v: "67%" },
+      { k: "Stalls", v: "0.3%" },
+      { k: "Pipeline", v: "12 deep" },
+    ],
+    x: 60, y: 35,
+  },
+  {
+    id: "gate-c2",
+    title: "Logic Gate · C2",
+    status: "DECODE",
+    description: "Decode lane translating the amber pulse into routable opcodes for downstream cores.",
+    rows: [
+      { k: "Throughput", v: "8.4 IPC" },
+      { k: "Branch Pred.", v: "98.1%" },
+      { k: "μops/cyc", v: "6" },
+      { k: "Power State", v: "P0" },
+    ],
+    x: 38, y: 55,
+  },
+  {
+    id: "gate-d9",
+    title: "Logic Gate · D9",
+    status: "EXECUTE",
+    description: "Execute unit at the silicon edge — final stop before the pulse leaves as photons on the optical interconnect.",
+    rows: [
+      { k: "Voltage", v: "1.05 V" },
+      { k: "Temp", v: "61 °C" },
+      { k: "Retire Rate", v: "5.7 IPC" },
+      { k: "Optical Out", v: "ON" },
+    ],
+    x: 78, y: 75,
+  },
+];
 
 export function CircuitSection() {
+  const [active, setActive] = useState<HotspotData | null>(null);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -18,10 +75,11 @@ export function CircuitSection() {
     <section
       ref={ref}
       id="circuit"
-      className="relative h-[200vh] w-full bg-background"
+      aria-label="Silicon — circuit board and logic gates"
+      className="snap-section relative h-[200vh] w-full bg-background"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ scale: bgScale, filter: blurFilter }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden perspective-stage">
+        <motion.div className="absolute inset-0 depth-back preserve-3d" style={{ scale: bgScale, filter: blurFilter }}>
           <img
             src={circuitImg}
             alt="Macro circuit board"
@@ -73,18 +131,26 @@ export function CircuitSection() {
           </p>
         </div>
 
-        <div className="absolute right-6 top-1/2 hidden -translate-y-1/2 lg:block lg:right-20">
-          <DataPanel
-            label="Logic Gate · A4"
-            status="PROCESSING"
-            rows={[
-              { k: "Clock", v: "5.8 GHz" },
-              { k: "TDP", v: "127 W" },
-              { k: "Cache Hit", v: "99.4%" },
-              { k: "Pulse Origin", v: "ORBIT-11" },
-            ]}
-          />
-        </div>
+        {/* Clickable gate hotspots positioned over the SVG traces */}
+        {GATES.map((g) => (
+          <button
+            key={g.id}
+            type="button"
+            data-cursor="hover"
+            onClick={() => setActive(g)}
+            aria-label={`Inspect ${g.title}`}
+            className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer depth-fore"
+            style={{ left: `${g.x}%`, top: `${g.y}%` }}
+          >
+            <span className="relative grid place-items-center">
+              <span className="block h-3 w-3 rounded-full bg-accent shadow-[0_0_24px_rgba(255,191,0,0.7)] transition-transform group-hover:scale-150" />
+              <span aria-hidden="true" className="absolute -inset-2 rounded-full border border-accent/40 animate-pulse-soft" />
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.18em] text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100">
+                {g.id}
+              </span>
+            </span>
+          </button>
+        ))}
 
         {/* Closing footer */}
         <div className="absolute bottom-8 left-6 right-6 flex flex-wrap items-end justify-between gap-4 border-t border-border/60 pt-5 sm:left-12 sm:right-12 lg:left-20 lg:right-20">
@@ -96,6 +162,9 @@ export function CircuitSection() {
           </div>
         </div>
       </div>
+
+      <HotspotDialog data={active} onClose={() => setActive(null)} />
     </section>
   );
 }
+

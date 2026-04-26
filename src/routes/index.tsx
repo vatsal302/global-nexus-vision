@@ -29,7 +29,11 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <main className="relative bg-background text-foreground">
+    <main
+      id="main"
+      className="snap-page relative bg-background text-foreground"
+    >
+      <a href="#space" className="skip-link">Skip to content</a>
       <CustomCursor />
       <NavChrome />
       <SpaceSection />

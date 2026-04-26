@@ -61,10 +61,11 @@ export function NetworkSection() {
     <section
       ref={ref}
       id="network"
-      className="relative h-[180vh] w-full bg-background"
+      aria-label="Global mesh — sub-sea cables and peering points"
+      className="snap-section relative h-[180vh] w-full bg-background"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ scale: bgScale, y: bgY }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden perspective-stage">
+        <motion.div className="absolute inset-0 depth-back preserve-3d" style={{ scale: bgScale, y: bgY }}>
           <img
             src={networkImg}
             alt="Global fiber-optic network"

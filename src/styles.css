@@ -65,11 +65,58 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+  html {
+    scroll-behavior: smooth;
+    /* Section snapping — proximity is gentler than mandatory and won't fight long sticky sections */
+    scroll-snap-type: y proximity;
+  }
   body {
     overflow-x: hidden;
     cursor: none;
   }
+  .snap-section {
+    scroll-snap-align: start;
+  }
   ::selection { background: var(--color-accent); color: var(--color-background); }
+
+  /* Skip link — keyboard users only */
+  .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 200;
+    padding: 10px 14px;
+    background: var(--color-accent);
+    color: var(--color-background);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    transform: translateY(-200%);
+    transition: transform 180ms ease-out;
+  }
+  .skip-link:focus { transform: translateY(0); outline: none; }
+
+  /* Focus ring for keyboard users on hotspots */
+  [data-cursor="hover"]:focus-visible,
+  button:focus-visible,
+  a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  /* Respect reduced motion globally */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    body { cursor: auto; }
+    html { scroll-snap-type: none; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -77,6 +124,18 @@
   .font-mono   { font-family: var(--font-mono); }
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
+
+  /* True 3D parallax stage — children use translateZ for real depth */
+  .perspective-stage {
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+  .preserve-3d { transform-style: preserve-3d; }
+  .depth-back   { transform: translateZ(-300px) scale(1.35); }
+  .depth-mid    { transform: translateZ(-120px) scale(1.12); }
+  .depth-fore   { transform: translateZ(80px); }
+  .depth-front  { transform: translateZ(180px); }
 
   .grain::before {
     content: "";

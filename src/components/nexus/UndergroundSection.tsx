@@ -18,10 +18,11 @@ export function UndergroundSection() {
     <section
       ref={ref}
       id="underground"
-      className="relative h-[200vh] w-full bg-background"
+      aria-label="Underground — turbine hall and generation core"
+      className="snap-section relative h-[200vh] w-full bg-background"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ scale: bgScale }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden perspective-stage">
+        <motion.div className="absolute inset-0 depth-back preserve-3d" style={{ scale: bgScale }}>
           <img
             src={undergroundImg}
             alt="Underground turbine hall"
