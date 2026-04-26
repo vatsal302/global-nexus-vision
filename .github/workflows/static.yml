@@ -34,12 +34,12 @@ jobs:
         env:
           # For project pages set VITE_BASE_PATH to "/<repo-name>/" via repo Variables.
           # Leave unset for user/org root pages (defaults to "/").
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/' }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/global-nexus-vision/' }}
         run: npm run build:spa
 
       - name: Finalize GitHub Pages output
         env:
-          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/' }}
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/global-nexus-vision/' }}
         run: node scripts/build-gh-pages-shell.mjs
 
       - name: Setup Pages
