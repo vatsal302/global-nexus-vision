@@ -29,20 +29,18 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <>
-      <a href="#main" className="skip-link">Skip to content</a>
+    <main
+      id="main"
+      className="snap-page relative bg-background text-foreground"
+    >
+      <a href="#space" className="skip-link">Skip to content</a>
       <CustomCursor />
       <NavChrome />
-      <main
-        id="main"
-        className="snap-y-mandatory relative h-screen overflow-y-scroll bg-background text-foreground"
-      >
-        <SpaceSection />
-        <NetworkSection />
-        <CitySection />
-        <UndergroundSection />
-        <CircuitSection />
-      </main>
-    </>
+      <SpaceSection />
+      <NetworkSection />
+      <CitySection />
+      <UndergroundSection />
+      <CircuitSection />
+    </main>
   );
 }
