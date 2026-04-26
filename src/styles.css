@@ -67,18 +67,15 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Section snapping — proximity is gentler than mandatory and won't fight long sticky sections */
+    scroll-snap-type: y proximity;
   }
   body {
     overflow-x: hidden;
     cursor: none;
   }
-  /* Scroll snap container — applied on the main content wrapper */
-  .snap-y-mandatory {
-    scroll-snap-type: y mandatory;
-  }
   .snap-section {
     scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
   ::selection { background: var(--color-accent); color: var(--color-background); }
 
