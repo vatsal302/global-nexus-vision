@@ -1,10 +1,67 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import circuitImg from "@/assets/circuit-level.jpg";
 import { SectionLabel } from "./SectionLabel";
 import { DataPanel } from "./DataPanel";
+import { HotspotDialog, type HotspotData } from "./HotspotDialog";
+
+const GATES: (HotspotData & { x: number; y: number })[] = [
+  {
+    id: "gate-a4",
+    title: "Logic Gate · A4",
+    status: "PROCESSING",
+    description: "Top-of-die NAND cluster handling control-plane decisions for the inbound orbit pulse.",
+    rows: [
+      { k: "Clock", v: "5.8 GHz" },
+      { k: "TDP", v: "127 W" },
+      { k: "Cache Hit", v: "99.4%" },
+      { k: "Pulse Origin", v: "ORBIT-11" },
+    ],
+    x: 22, y: 15,
+  },
+  {
+    id: "gate-b7",
+    title: "Logic Gate · B7",
+    status: "FETCH",
+    description: "Mid-die fetch unit pre-loading routing tables for the next sub-sea hop.",
+    rows: [
+      { k: "Clock", v: "5.8 GHz" },
+      { k: "L2 Pressure", v: "67%" },
+      { k: "Stalls", v: "0.3%" },
+      { k: "Pipeline", v: "12 deep" },
+    ],
+    x: 60, y: 35,
+  },
+  {
+    id: "gate-c2",
+    title: "Logic Gate · C2",
+    status: "DECODE",
+    description: "Decode lane translating the amber pulse into routable opcodes for downstream cores.",
+    rows: [
+      { k: "Throughput", v: "8.4 IPC" },
+      { k: "Branch Pred.", v: "98.1%" },
+      { k: "μops/cyc", v: "6" },
+      { k: "Power State", v: "P0" },
+    ],
+    x: 38, y: 55,
+  },
+  {
+    id: "gate-d9",
+    title: "Logic Gate · D9",
+    status: "EXECUTE",
+    description: "Execute unit at the silicon edge — final stop before the pulse leaves as photons on the optical interconnect.",
+    rows: [
+      { k: "Voltage", v: "1.05 V" },
+      { k: "Temp", v: "61 °C" },
+      { k: "Retire Rate", v: "5.7 IPC" },
+      { k: "Optical Out", v: "ON" },
+    ],
+    x: 78, y: 75,
+  },
+];
 
 export function CircuitSection() {
+  const [active, setActive] = useState<HotspotData | null>(null);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
