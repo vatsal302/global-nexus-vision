@@ -18,10 +18,11 @@ export function CircuitSection() {
     <section
       ref={ref}
       id="circuit"
-      className="relative h-[200vh] w-full bg-background"
+      aria-label="Silicon — circuit board and logic gates"
+      className="snap-section relative h-[200vh] w-full bg-background"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ scale: bgScale, filter: blurFilter }}>
+      <div className="sticky top-0 h-screen w-full overflow-hidden perspective-stage">
+        <motion.div className="absolute inset-0 depth-back preserve-3d" style={{ scale: bgScale, filter: blurFilter }}>
           <img
             src={circuitImg}
             alt="Macro circuit board"
