@@ -131,18 +131,26 @@ export function CircuitSection() {
           </p>
         </div>
 
-        <div className="absolute right-6 top-1/2 hidden -translate-y-1/2 lg:block lg:right-20">
-          <DataPanel
-            label="Logic Gate · A4"
-            status="PROCESSING"
-            rows={[
-              { k: "Clock", v: "5.8 GHz" },
-              { k: "TDP", v: "127 W" },
-              { k: "Cache Hit", v: "99.4%" },
-              { k: "Pulse Origin", v: "ORBIT-11" },
-            ]}
-          />
-        </div>
+        {/* Clickable gate hotspots positioned over the SVG traces */}
+        {GATES.map((g) => (
+          <button
+            key={g.id}
+            type="button"
+            data-cursor="hover"
+            onClick={() => setActive(g)}
+            aria-label={`Inspect ${g.title}`}
+            className="group absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer depth-fore"
+            style={{ left: `${g.x}%`, top: `${g.y}%` }}
+          >
+            <span className="relative grid place-items-center">
+              <span className="block h-3 w-3 rounded-full bg-accent shadow-[0_0_24px_rgba(255,191,0,0.7)] transition-transform group-hover:scale-150" />
+              <span aria-hidden="true" className="absolute -inset-2 rounded-full border border-accent/40 animate-pulse-soft" />
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.18em] text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100">
+                {g.id}
+              </span>
+            </span>
+          </button>
+        ))}
 
         {/* Closing footer */}
         <div className="absolute bottom-8 left-6 right-6 flex flex-wrap items-end justify-between gap-4 border-t border-border/60 pt-5 sm:left-12 sm:right-12 lg:left-20 lg:right-20">
@@ -154,6 +162,9 @@ export function CircuitSection() {
           </div>
         </div>
       </div>
+
+      <HotspotDialog data={active} onClose={() => setActive(null)} />
     </section>
   );
 }
+
