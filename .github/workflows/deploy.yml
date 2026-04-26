@@ -1,0 +1,77 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
+      - name: Build
+        env:
+          # Set base path to repo name when deploying to a project page.
+          # Override in repo settings -> Variables if needed.
+          VITE_BASE_PATH: ${{ vars.VITE_BASE_PATH || '/' }}
+        run: npm run build
+
+      - name: Resolve publish directory
+        id: pubdir
+        run: |
+          if [ -d "dist/client" ]; then
+            echo "dir=dist/client" >> $GITHUB_OUTPUT
+          elif [ -d ".output/public" ]; then
+            echo "dir=.output/public" >> $GITHUB_OUTPUT
+          elif [ -d "dist" ]; then
+            echo "dir=dist" >> $GITHUB_OUTPUT
+          else
+            echo "No build output directory found" && exit 1
+          fi
+
+      - name: Add SPA fallback (404.html copy of index.html)
+        run: |
+          if [ -f "${{ steps.pubdir.outputs.dir }}/index.html" ]; then
+            cp "${{ steps.pubdir.outputs.dir }}/index.html" "${{ steps.pubdir.outputs.dir }}/404.html"
+          fi
+          touch "${{ steps.pubdir.outputs.dir }}/.nojekyll"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ steps.pubdir.outputs.dir }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
