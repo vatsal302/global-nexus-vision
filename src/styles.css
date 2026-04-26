@@ -128,6 +128,18 @@
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
 
+  /* True 3D parallax stage — children use translateZ for real depth */
+  .perspective-stage {
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+    transform-style: preserve-3d;
+  }
+  .preserve-3d { transform-style: preserve-3d; }
+  .depth-back   { transform: translateZ(-300px) scale(1.35); }
+  .depth-mid    { transform: translateZ(-120px) scale(1.12); }
+  .depth-fore   { transform: translateZ(80px); }
+  .depth-front  { transform: translateZ(180px); }
+
   .grain::before {
     content: "";
     position: absolute; inset: 0;
